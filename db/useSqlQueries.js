@@ -1,4 +1,4 @@
-const { getDeptId, addPosition } = require("../db/sqlQueries");
+// const { getDeptId, addPosition } = require("../db/sqlQueries");
 const DB = require("../db/sqlQueries");
 
 function addDept(deptName) {
@@ -74,13 +74,16 @@ function addRegEmployee(firstName, lastName, position) {
 function getDepts() {
     DB.getDepartments()
     .then(function (result) {
-        console.log("Departments:")
-        console.table(result)
+        result.length === 0 
+        ? console.log("There are no departments") 
+        : console.table(result)
     })
     .catch(function (err) {
         console.log(err)
     })
 }
+
+// getDepts();
 
 function getPosns() {
     DB.getPositions()
@@ -140,7 +143,8 @@ function promote(position, employeeId) {
 }
 
 // manId(1);
-addRegEmployee("regular", "emp", "sosdfsd")
+// addRegEmployee("regular", "emp", "sosdfsd")
+
 // addMan("manager2", "ln", "lead accounter")
 // addPstn("lead accounter", 433, "accounting");
 // updateEmp("sales manager", 1);
@@ -152,4 +156,4 @@ addRegEmployee("regular", "emp", "sosdfsd")
 
 // addPstn("sosdfsd", 400, "sales");
 
-// module.exports = { getEmp };
+module.exports = { getEmp };
