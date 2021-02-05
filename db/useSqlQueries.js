@@ -49,22 +49,44 @@ function addRegEmployee(firstName, lastName, position) {
     DB.getPositionId(position)
     .then(function (result) {
         const posId = result;
-        console.log(posId)
-        DB.getManagerId(posId)
-        .then(function (result) {
-            const managerId = result;
-            console.log(managerId)
-            DB.addRegularEmployee(firstName, lastName, posId, managerId)
-            .then(function (result) {
-                console.table(result)
-            })
-            .catch(function (err) {
-                console.log(err)
-            })
-        })
-        .catch(function (err) {
-            console.log(err)
-        })
+        console.log(posId, firstName, lastName)
+        // DB.getManagerId(posId)
+        // .then(function (result) {
+        //     const managerId = result;
+        //     console.log(managerId)
+        //     DB.addRegularEmployee(firstName, lastName, posId, managerId)
+        //     .then(function (result) {
+        //         console.table(result)
+        //     })
+        //     .catch(function (err) {
+        //         console.log(err)
+        //     })
+        // })
+        // .catch(function (err) {
+        //     console.log(err)
+        // })
+    })
+    .catch(function (err) {
+        console.log(err)
+    })
+}
+
+function getDepts() {
+    DB.getDepartments()
+    .then(function (result) {
+        console.log("Departments:")
+        console.table(result)
+    })
+    .catch(function (err) {
+        console.log(err)
+    })
+}
+
+function getPosns() {
+    DB.getPositions()
+    .then(function (result) {
+        console.log("Positions:")
+        console.table(result)
     })
     .catch(function (err) {
         console.log(err)
@@ -82,21 +104,51 @@ function getEmp() {
     })
 }
 
-function manId(positionId) {
-    DB.getManagerId(positionId)
+function updateEmpRoll(position, employeeId) {
+    DB.getPositionId(position)
     .then(function (result) {
-        console.log(result);
+        const posId = result;
+        DB.updateEmployeeRole(posId, employeeId)
+        .then(function (result) {
+            console.table(result)
+        })
+        .catch(function (err) {
+            console.log(err)
+        })
     })
     .catch(function (err) {
         console.log(err)
     })
 }
 
+function promote(position, employeeId) {
+    DB.getPositionId(position)
+    .then(function (result) {
+        const posId = result;
+        DB.promoteToManager(posId, employeeId)
+        .then(function (result) {
+            console.log(`Employee ${employeeId} promoted!`)
+            console.table(result)
+        })
+        .catch(function (err) {
+            console.log(err)
+        })
+    })
+    .catch(function (err) {
+        console.log(err)
+    })
+}
 
 // manId(1);
-// addRegEmployee("regular", "emp", "what")
-// addMan("manager1", "hsdfi", "sosdfsd")
-addRegEmployee("joe", "reg", "sosdfsd")
+addRegEmployee("regular", "emp", "sosdfsd")
+// addMan("manager2", "ln", "lead accounter")
+// addPstn("lead accounter", 433, "accounting");
+// updateEmp("sales manager", 1);
+
+// promote("sales manager", 2);
+// getEmp();
+// getPosns();
+
 
 // addPstn("sosdfsd", 400, "sales");
 

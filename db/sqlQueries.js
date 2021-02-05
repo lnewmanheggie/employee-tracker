@@ -101,9 +101,77 @@ class DB {
         })
     }
 
+    getPositions() {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "select title, salary, name " +
+                "from position " +
+                "inner join department on department_id = department.id;",
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
+    getDepartments() {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "select name " +
+                "from department;",
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
     getEmployees() {
         return new Promise((resolve, reject) => {
-            this.connection.query("select * from employee", function (err, result) {
+            this.connection.query(
+                "SELECT employee.id, first_name, last_name, title, salary " +
+                "FROM employee " +
+                "INNER JOIN position ON employee.role_id = position.id;", 
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
+    updateEmployeeRole(positionId, employeeId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "UPDATE employee SET ? WHERE ?",
+                [
+                    {
+                        role_id: positionId,
+                    },
+                    {
+                        id: employeeId
+                    }
+                ], 
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
+    promoteToManager(positionId, employeeId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "UPDATE employee SET ? WHERE ?",
+                [
+                    {
+                        role_id: positionId,
+                        manager_id: null
+                    },
+                    {
+                        id: employeeId
+                    }
+                ], 
+                function (err, result) {
                 if (err) return reject(err);
                 resolve(result)
             })
