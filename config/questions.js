@@ -104,17 +104,11 @@ function viewEmployeesByMan(managerArr) {
     return [
         {
             type: 'list',
-            message: "Which employee would you like to update?",
-            choices: employeeArr,
-            name: 'employeeName',
-        },
-        {
-            type: 'list',
-            message: "What is their new role?",
-            choices: positionArr,
-            name: 'newPosition',
+            message: "Which manager would you like to view employees for?",
+            choices: managerArr,
+            name: 'manager',
         }
     ]
 }
 
-module.exports = { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole }
+module.exports = { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole, viewEmployeesByMan }

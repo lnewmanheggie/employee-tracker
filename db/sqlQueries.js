@@ -125,19 +125,10 @@ class DB {
         })
     }
 
-    promoteToManager(positionId, employeeId) {
+    viewEmpByMan(managerId) {
         return new Promise((resolve, reject) => {
             this.connection.query(
-                "UPDATE employee SET ? WHERE ?",
-                [
-                    {
-                        role_id: positionId,
-                        manager_id: null
-                    },
-                    {
-                        id: employeeId
-                    }
-                ], 
+                `SELECT first_name, last_name FROM employee WHERE manager_id = ${managerId};`,
                 function (err, result) {
                 if (err) return reject(err);
                 resolve(result)

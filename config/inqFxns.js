@@ -1,4 +1,4 @@
-const { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole } = require('./questions');
+const { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole, viewEmployeesByMan } = require('./questions');
 const inquirer = require('inquirer');
 const DB = require("../db/sqlQueries");
 const { updateEmployeeRole } = require('../db/sqlQueries');
@@ -236,7 +236,23 @@ const viewEmpByManager = () => {
                 }
                 managerArr.push(item);
             });
-            console.log(managerArr)
+            inquirer
+            .prompt(viewEmployeesByMan(managerArr))
+            .then(({manager}) => {
+                DB.viewEmpByMan(manager)
+                .then(function (result) {
+                    if (result.length === 0) {
+                        console.log("\nThis manager does not have any employees.\n")
+                        menuFunction()
+                    } else {
+                        console.table(result)
+                        menuFunction();
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+            })
         }
     })
 }
