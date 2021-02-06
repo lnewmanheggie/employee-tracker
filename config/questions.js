@@ -3,7 +3,7 @@ const menu = {
     message: 'What would you like to do?',
     choices: ["Add a department", "Add a role", "Add an employee", 
             "View departments", "View roles", "View employees", "View employees by manager", 
-            "Update employee roles", 
+            "Update employee roles", "Update employee managers", 
             "Exit"],
     name: 'menuAnswer'
 }
@@ -111,4 +111,30 @@ function viewEmployeesByMan(managerArr) {
     ]
 }
 
-module.exports = { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole, viewEmployeesByMan }
+function updateEmployeeManQstns(employeeArr, managerArr) {
+    return [
+        {
+            type: 'list',
+            message: "Which employee would you like to update?",
+            choices: employeeArr,
+            name: 'employee',
+        },
+        {
+            type: 'list',
+            message: "Who is the employee's new manager?",
+            choices: managerArr,
+            name: 'manager',
+        }
+    ]
+}
+
+module.exports = { 
+    menu, 
+    addDepartment, 
+    addRoleQstns, 
+    isManager, 
+    addEmpQstns, 
+    updateEmpRole, 
+    viewEmployeesByMan,
+    updateEmployeeManQstns
+}

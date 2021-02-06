@@ -135,6 +135,27 @@ class DB {
             })
         })
     }
+    
+    updateEmployeeManager(employeeId, managerId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "UPDATE employee SET ? WHERE ?",
+                [
+                    {
+                        manager_id: managerId,
+                    },
+                    {
+                        id: employeeId
+                    }
+                ],
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
+    
 
     endConnection() {
         return this.connection.end();

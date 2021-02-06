@@ -1,4 +1,4 @@
-const { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole, viewEmployeesByMan } = require('./questions');
+const { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole, viewEmployeesByMan, updateEmployeeManQstns } = require('./questions');
 const inquirer = require('inquirer');
 const DB = require("../db/sqlQueries");
 const { updateEmployeeRole } = require('../db/sqlQueries');
@@ -33,6 +33,9 @@ const menuFunction = () => {
                 break;
             case 'Update employee roles':
                 updateInfo();
+                break;
+            case 'Update employee managers':
+                updateManagers();
                 break;
             case 'Exit':
                 exit();
@@ -254,6 +257,50 @@ const viewEmpByManager = () => {
                 })
             })
         }
+    })
+}
+
+const updateManagers = () => {
+    DB.getEmployees()
+    .then(function (result) {
+        const employeeArr = [];
+        result.forEach(element => {
+            let fullName = element.first_name + " " + element.last_name;
+            let item = {
+                name: fullName,
+                value: element.id
+            }
+            employeeArr.push(item);
+        });
+        DB.getManagers()
+        .then(function (result) {
+            const managerArr = [];
+            result.forEach(element => {
+                let item = {
+                    name: element.manager_name,
+                    value: element.id
+                }
+                managerArr.push(item);
+            });
+            let itemNull = {
+                name: "No manager",
+                value: null
+            }
+            managerArr.push(itemNull)
+
+            inquirer
+            .prompt(updateEmployeeManQstns(employeeArr, managerArr))
+            .then(({employee, manager}) => {
+                DB.updateEmployeeManager(employee, manager)
+                .then(function (result) {
+                    console.log("Manager successfully updated.")
+                    menuFunction();
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+            })
+        })
     })
 }
 
