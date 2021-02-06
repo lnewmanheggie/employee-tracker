@@ -1,4 +1,5 @@
-const connection = require("../config/connection")
+const connection = require("../config/connection");
+const { isManager } = require("../config/questions");
 
 class DB {
     constructor(conn) {
@@ -35,23 +36,7 @@ class DB {
         })
     }
 
-    addManager(firstName, lastName, posId) {
-        return new Promise((resolve, reject) => {
-            this.connection.query(
-                "INSERT INTO employee SET ?",
-                {
-                first_name: firstName,
-                last_name: lastName,
-                role_id: posId
-                },
-                function (err, result) {
-                if (err) return reject(err);
-                resolve(result)
-            })
-        })
-    }
-
-    addRegularEmployee(firstName, lastName, posId, managerId) {
+    addEmployee(firstName, lastName, posId, managerId, isMan) {
         return new Promise((resolve, reject) => {
             this.connection.query(
                 "INSERT INTO employee SET ?",
@@ -59,7 +44,8 @@ class DB {
                 first_name: firstName,
                 last_name: lastName,
                 role_id: posId,
-                manager_id: managerId
+                manager_id: managerId,
+                is_manager: isMan
                 },
                 function (err, result) {
                 if (err) return reject(err);
@@ -68,43 +54,23 @@ class DB {
         })
     }
 
-    // getDeptId(deptName) {
-    //     return new Promise((resolve, reject) => {
-    //         this.connection.query(
-    //             `SELECT id FROM department WHERE name = "${deptName}"`,
-    //             function (err, result) {
-    //             if (err) return reject(err);
-    //             resolve(result[0].id)
-    //         })
-    //     })
-    // }
-
-    // getPositionId(posName) {
-    //     return new Promise((resolve, reject) => {
-    //         this.connection.query(
-    //             `SELECT id FROM position WHERE title = "${posName}"`,
-    //             function (err, result) {
-    //             if (err) return reject(err);
-    //             resolve(result[0].id)
-    //         })
-    //     })
-    // }
-
-    // getManagerId(positionId) {
-    //     return new Promise((resolve, reject) => {
-    //         this.connection.query(
-    //             `SELECT id FROM employee WHERE role_id = "${positionId}" and manager_id is null`,
-    //             function (err, result) {
-    //             if (err) return reject(err);
-    //             resolve(result[0].id)
-    //         })
-    //     })
-    // }
+    getManagers() {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name " +
+                "FROM employee " +
+                "WHERE is_manager = true;",
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
 
     getPositions() {
         return new Promise((resolve, reject) => {
             this.connection.query(
-                "select * " +
+                "select position.id, title, salary, department.name " +
                 "from position " +
                 "inner join department on department_id = department.id;",
                 function (err, result) {
@@ -129,9 +95,10 @@ class DB {
     getEmployees() {
         return new Promise((resolve, reject) => {
             this.connection.query(
-                "SELECT employee.id, first_name, last_name, title, salary " +
+                "SELECT employee.id, employee.first_name, employee.last_name, position.title, position.salary, department.name " + 
                 "FROM employee " +
-                "INNER JOIN position ON employee.role_id = position.id;", 
+                "LEFT JOIN position ON role_id = position.id " +
+                "LEFT JOIN department ON department_id = department.id;", 
                 function (err, result) {
                 if (err) return reject(err);
                 resolve(result)
@@ -139,7 +106,7 @@ class DB {
         })
     }
 
-    updateEmployeeRole(positionId, employeeId) {
+    updateEmployeeRole(employeeId, positionId) {
         return new Promise((resolve, reject) => {
             this.connection.query(
                 "UPDATE employee SET ? WHERE ?",
@@ -176,6 +143,10 @@ class DB {
                 resolve(result)
             })
         })
+    }
+
+    endConnection() {
+        return this.connection.end();
     }
 
 }

@@ -2,8 +2,8 @@ const menu = {
     type: 'list',
     message: 'What would you like to do?',
     choices: ["Add a department", "Add a role", "Add an employee", 
-            "View departments", "View roles", "View employees", 
-            "Update information", 
+            "View departments", "View roles", "View employees", "View employees by manager", 
+            "Update employee roles", 
             "Exit"],
     name: 'menuAnswer'
 }
@@ -41,14 +41,22 @@ function addRoleQstns(deptArr) {
 const isManager = [
     {
         type: 'list',
-        message: "What is this employee's role?",
-        choices: ["yes", "no"],
-        name: 'employeeRole',
+        message: 'Is the employee a manager?',
+        choices: [
+            {
+                name: "yes",
+                value: true
+            }, 
+            {
+                name: "no",
+                value: false
+            }
+        ],
+        name: 'isMan',
     },
 ]
 
-
-function addRegEmpQstns(positionArr, managerArr) {
+function addEmpQstns(positionArr, managerArr) {
     return [
         {
             type: 'list',
@@ -68,13 +76,45 @@ function addRegEmpQstns(positionArr, managerArr) {
         },
         {
             type: 'list',
-            message: "What is this employee's role?",
+            message: "Who is this employee's manager?",
             choices: managerArr,
             name: 'employeeManager',
-        },
-
+        }
     ]
 }
 
+function updateEmpRole(employeeArr, positionArr) {
+    return [
+        {
+            type: 'list',
+            message: "Which employee would you like to update?",
+            choices: employeeArr,
+            name: 'employeeName',
+        },
+        {
+            type: 'list',
+            message: "What is their new role?",
+            choices: positionArr,
+            name: 'newPosition',
+        }
+    ]
+}
 
-module.exports = { menu, addDepartment, addRoleQstns, isManager }
+function viewEmployeesByMan(managerArr) {
+    return [
+        {
+            type: 'list',
+            message: "Which employee would you like to update?",
+            choices: employeeArr,
+            name: 'employeeName',
+        },
+        {
+            type: 'list',
+            message: "What is their new role?",
+            choices: positionArr,
+            name: 'newPosition',
+        }
+    ]
+}
+
+module.exports = { menu, addDepartment, addRoleQstns, isManager, addEmpQstns, updateEmpRole }
