@@ -155,7 +155,53 @@ class DB {
         })
     }
 
-    
+    deleteDepartment(departmentId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "DELETE FROM department WHERE ?",
+                [
+                    {
+                        id: departmentId,
+                    }
+                ],
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
+    deletePosition(positionId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "DELETE FROM position WHERE ?",
+                [
+                    {
+                        id: positionId,
+                    }
+                ],
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
+    deleteEmployee(employeeId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "DELETE FROM employee WHERE ?",
+                [
+                    {
+                        id: employeeId,
+                    }
+                ],
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
 
     endConnection() {
         return this.connection.end();

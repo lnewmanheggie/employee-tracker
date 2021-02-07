@@ -4,6 +4,7 @@ const menu = {
     choices: ["Add a department", "Add a role", "Add an employee", 
             "View departments", "View roles", "View employees", "View employees by manager", 
             "Update employee roles", "Update employee managers", 
+            "Delete department", "Delete role", "Delete employee",
             "Exit"],
     name: 'menuAnswer'
 }
@@ -128,6 +129,40 @@ function updateEmployeeManQstns(employeeArr, managerArr) {
     ]
 }
 
+function deleteDeptQstns(departmentArr) {
+    return [
+        {
+            type: 'list',
+            message: "Which department would you like to delete?",
+            choices: departmentArr,
+            name: 'department',
+        },
+    ]
+}
+
+function deletePositionQstns(positionArr) {
+    return [
+        {
+            type: 'list',
+            message: "Which roll would you like to delete?",
+            choices: positionArr,
+            name: 'position',
+        },
+    ]
+}
+
+function deleteEmpQstns(employeeArr) {
+    return [
+        {
+            type: 'list',
+            message: "Which employee would you like to delete?",
+            choices: employeeArr,
+            name: 'employee',
+        },
+    ]
+}
+
+
 module.exports = { 
     menu, 
     addDepartment, 
@@ -136,5 +171,8 @@ module.exports = {
     addEmpQstns, 
     updateEmpRole, 
     viewEmployeesByMan,
-    updateEmployeeManQstns
+    updateEmployeeManQstns,
+    deleteDeptQstns,
+    deletePositionQstns,
+    deleteEmpQstns
 }

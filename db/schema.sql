@@ -15,6 +15,7 @@ create table employee (
     last_name varchar(30) not null,
     role_id int(10) not null,
     manager_id int(10),
+    is_manager boolean,
     primary key (id)
 );
 
@@ -26,11 +27,3 @@ create table position (
     primary key (id)
 );
 
-insert into department (name)
-values ("accounting");
-
-delete from department where id = 2;
-
-select id FROM employee WHERE role_id = 1;
-
-select * from employee;
