@@ -334,26 +334,31 @@ const updateManagers = () => {
 const deleteDepartment = () => {
     DB.getDepartments()
     .then(function (result) {
-        const deptArr = [];
-        result.forEach(element => {
-            let item = {
-                name: element.name,
-                value: element.id
-            }
-            deptArr.push(item);
-        });
-        inquirer
-        .prompt(deleteDeptQstns(deptArr))
-        .then(({department}) => {
-            DB.deleteDepartment(department)
-            .then(function (result) {
-                console.log("Department successfully deleted.")
-                menuFunction();
+        if (result.length === 0) {
+            console.log("There are no departments to delete");
+            menuFunction();
+        } else {
+            const deptArr = [];
+            result.forEach(element => {
+                let item = {
+                    name: element.name,
+                    value: element.id
+                }
+                deptArr.push(item);
+            });
+            inquirer
+            .prompt(deleteDeptQstns(deptArr))
+            .then(({department}) => {
+                DB.deleteDepartment(department)
+                .then(function (result) {
+                    console.log("Department successfully deleted.")
+                    menuFunction();
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
             })
-            .catch(function (err) {
-                console.log(err)
-            })
-        })
+        }
     })
     .catch(function (err) {
         console.log(err)
@@ -363,26 +368,31 @@ const deleteDepartment = () => {
 const deleteRole = () => {
     DB.getPositions()
     .then(function (result) {
-        const positionArr = [];
-        result.forEach(element => {
-            let item = {
-                name: element.title,
-                value: element.id
-            }
-            positionArr.push(item);
-        });
-        inquirer
-        .prompt(deletePositionQstns(positionArr))
-        .then(({position}) => {
-            DB.deletePosition(position)
-            .then(function (result) {
-                console.log("Role successfully deleted.")
-                menuFunction();
+        if (result.length === 0) {
+            console.log("There are no roles to delete");
+            menuFunction();
+        } else {
+            const positionArr = [];
+            result.forEach(element => {
+                let item = {
+                    name: element.title,
+                    value: element.id
+                }
+                positionArr.push(item);
+            });
+            inquirer
+            .prompt(deletePositionQstns(positionArr))
+            .then(({position}) => {
+                DB.deletePosition(position)
+                .then(function (result) {
+                    console.log("Role successfully deleted.")
+                    menuFunction();
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
             })
-            .catch(function (err) {
-                console.log(err)
-            })
-        })
+        }
     })
     .catch(function (err) {
         console.log(err)
@@ -392,28 +402,33 @@ const deleteRole = () => {
 const deleteEmployee = () => {
     DB.getEmployees()
     .then(function (result) {
-        const employeeArr = [];
-        result.forEach(element => {
-            let fullName = element.first_name + " " + element.last_name;
-            let item = {
-                name: fullName,
-                value: element.id
-            }
-            employeeArr.push(item);
-        });
-        console.log(employeeArr);
-        inquirer
-        .prompt(deleteEmpQstns(employeeArr))
-        .then(({employee}) => {
-            DB.deleteEmployee(employee)
-            .then(function (result) {
-                console.log("Employee successfully deleted.")
-                menuFunction();
+        if (result.length === 0) {
+            console.log("There are no employees to delete");
+            menuFunction();
+        } else {
+            const employeeArr = [];
+            result.forEach(element => {
+                let fullName = element.first_name + " " + element.last_name;
+                let item = {
+                    name: fullName,
+                    value: element.id
+                }
+                employeeArr.push(item);
+            });
+            console.log(employeeArr);
+            inquirer
+            .prompt(deleteEmpQstns(employeeArr))
+            .then(({employee}) => {
+                DB.deleteEmployee(employee)
+                .then(function (result) {
+                    console.log("Employee successfully deleted.")
+                    menuFunction();
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
             })
-            .catch(function (err) {
-                console.log(err)
-            })
-        })
+        }
     })
     .catch(function (err) {
         console.log(err)
