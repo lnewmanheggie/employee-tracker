@@ -13,9 +13,6 @@ const {
 } = require('./questions');
 const inquirer = require('inquirer');
 const DB = require("../db/sqlQueries");
-const { updateEmployeeRole } = require('../db/sqlQueries');
-// const { addPosition } = require('../db/sqlQueries');
-// const { getEmp } = require('../db/useSqlQueries');
 
 const menuFunction = () => {
     inquirer
@@ -415,7 +412,6 @@ const deleteEmployee = () => {
                 }
                 employeeArr.push(item);
             });
-            console.log(employeeArr);
             inquirer
             .prompt(deleteEmpQstns(employeeArr))
             .then(({employee}) => {
@@ -438,8 +434,5 @@ const deleteEmployee = () => {
 const exit = () => {
     DB.endConnection();
 }
-
-
-
 
 module.exports = { menuFunction };
