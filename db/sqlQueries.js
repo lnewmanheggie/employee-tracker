@@ -80,6 +80,18 @@ class DB {
         })
     }
 
+    getDepartmentsINQ() {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "select name, id AS value " +
+                "from department;",
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
     getDepartments() {
         return new Promise((resolve, reject) => {
             this.connection.query(
