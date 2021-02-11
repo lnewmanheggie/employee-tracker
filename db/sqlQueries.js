@@ -67,6 +67,19 @@ class DB {
         })
     }
 
+    getManagersINQ() {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value " +
+                "FROM employee " +
+                "WHERE is_manager = true;",
+                function (err, result) {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
     getPositions() {
         return new Promise((resolve, reject) => {
             this.connection.query(
@@ -80,11 +93,23 @@ class DB {
         })
     }
 
+    getPositionsINQ() {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "SELECT title AS name, id AS value " + 
+                "FROM position;",
+                (err, result) => {
+                if (err) return reject(err);
+                resolve(result)
+            })
+        })
+    }
+
     getDepartmentsINQ() {
         return new Promise((resolve, reject) => {
             this.connection.query(
-                "select name, id AS value " +
-                "from department;",
+                "SELECT name, id AS value " +
+                "FROM department;",
                 function (err, result) {
                 if (err) return reject(err);
                 resolve(result)

@@ -63,20 +63,20 @@ const menuFunction = () => {
         })
 }
 
-const addDept = () => {
-    inquirer
-        .prompt(addDepartment)
-        .then(({ department }) => {
-            DB.addDepartment(department)
-                .then(function (result) {
-                    console.log("Department added successfully.")
-                    menuFunction();
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
-        })
-}
+// const addDept = () => {
+//     inquirer
+//         .prompt(addDepartment)
+//         .then(({ department }) => {
+//             DB.addDepartment(department)
+//                 .then(function (result) {
+//                     console.log("Department added successfully.")
+//                     menuFunction();
+//                 })
+//                 .catch(function (err) {
+//                     console.log(err)
+//                 })
+//         })
+// }
 
 // const addRole = () => {
 //     DB.getDepartments()
@@ -141,6 +141,21 @@ const addDept = () => {
 //         })
 // }
 
+const addDept = () => {
+    inquirer
+        .prompt(addDepartment)
+        .then(({ department }) => {
+            DB.addDepartment(department)
+                .then(function (result) {
+                    console.log("Department added successfully.")
+                    menuFunction();
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        })
+}
+
 const addRole = async () => {
     try {
         const deptArr = await DB.getDepartmentsINQ()
@@ -148,7 +163,6 @@ const addRole = async () => {
             console.log("\n****** You must add departments before you add roles ******\n")
             return menuFunction();
         }
-
         const { roleDepartment, role, salary } = await inquirer.prompt(addRoleQstns(deptArr))
 
         await DB.addPosition(role, salary, roleDepartment)
@@ -160,61 +174,95 @@ const addRole = async () => {
     }
 }
 
-const addEmployee = () => {
-    DB.getPositions()
-        .then(function (result) {
-            if (result.length === 0) {
-                console.log("\n****** You must add positions before you add employees ******\n")
-                menuFunction();
-            } else {
-                const positionArr = [];
-                result.forEach(element => {
-                    let item = {
-                        name: element.title,
-                        value: element.id
-                    }
-                    positionArr.push(item);
-                });
-                inquirer
-                    .prompt(isManager)
-                    .then(({ isMan }) => {
-                        DB.getManagers()
-                            .then(function (result) {
-                                const managerArr = [];
-                                if (result.length === 0 && isMan === false) {
-                                    console.log("\n****** You must add managers before you add other employees ******\n")
-                                    addEmployee();
-                                } else {
-                                    result.forEach(element => {
-                                        let item = {
-                                            name: element.manager_name,
-                                            value: element.id
-                                        }
-                                        managerArr.push(item);
-                                    });
-                                    let itemNull = {
-                                        name: "No manager",
-                                        value: null
-                                    }
-                                    managerArr.push(itemNull)
-                                    inquirer
-                                        .prompt(addEmpQstns(positionArr, managerArr))
-                                        .then(({ employeeRole, firstName, lastName, employeeManager }) => {
-                                            DB.addEmployee(firstName, lastName, employeeRole, employeeManager, isMan)
-                                                .then(function () {
-                                                    console.log("Employee added successfully.")
-                                                    menuFunction();
-                                                })
-                                                .catch(function (err) {
-                                                    console.log(err)
-                                                })
-                                        })
-                                }
-                            })
-                    })
-            }
-        })
+const addEmployee = async () => {
+    try {
+        const positionArr = await DB.getPositionsINQ();
+        console.log(positionArr);
+        if (positionArr.length === 0) {
+            console.log("\n****** You must add positions before you add employees ******\n")
+            return menuFunction();
+        }
+
+        const { isMan } = await inquirer.prompt(isManager);
+        const managerArr = await DB.getManagersINQ();
+        if (managerArr.length === 0 && isMan === false) {
+            console.log("\n****** You must add managers before you add other employees ******\n")
+            return menuFunction();
+        }
+        const itemNull = {
+            name: "No manager",
+            value: null
+        }
+        managerArr.push(itemNull);
+
+        const { employeeRole, firstName, lastName, employeeManager } = 
+        await inquirer.prompt(addEmpQstns(positionArr, managerArr));
+
+        await DB.addEmployee(firstName, lastName, employeeRole, employeeManager, isMan);
+
+        console.log("Employee added successfully.")
+        menuFunction();
+
+    } catch (error) {
+        console.log(error);
+    }
 }
+
+// const addEmployee = () => {
+//     DB.getPositions()
+//         .then(function (result) {
+//             if (result.length === 0) {
+//                 console.log("\n****** You must add positions before you add employees ******\n")
+//                 menuFunction();
+//             } else {
+//                 const positionArr = [];
+//                 result.forEach(element => {
+//                     let item = {
+//                         name: element.title,
+//                         value: element.id
+//                     }
+//                     positionArr.push(item);
+//                 });
+//                 inquirer
+//                     .prompt(isManager)
+//                     .then(({ isMan }) => {
+//                         DB.getManagers()
+//                             .then(function (result) {
+//                                 const managerArr = [];
+//                                 if (result.length === 0 && isMan === false) {
+//                                     console.log("\n****** You must add managers before you add other employees ******\n")
+//                                     addEmployee();
+//                                 } else {
+//                                     result.forEach(element => {
+//                                         let item = {
+//                                             name: element.manager_name,
+//                                             value: element.id
+//                                         }
+//                                         managerArr.push(item);
+//                                     });
+//                                     let itemNull = {
+//                                         name: "No manager",
+//                                         value: null
+//                                     }
+//                                     managerArr.push(itemNull)
+//                                     inquirer
+//                                         .prompt(addEmpQstns(positionArr, managerArr))
+//                                         .then(({ employeeRole, firstName, lastName, employeeManager }) => {
+//                                             DB.addEmployee(firstName, lastName, employeeRole, employeeManager, isMan)
+//                                                 .then(function () {
+//                                                     console.log("Employee added successfully.")
+//                                                     menuFunction();
+//                                                 })
+//                                                 .catch(function (err) {
+//                                                     console.log(err)
+//                                                 })
+//                                         })
+//                                 }
+//                             })
+//                     })
+//             }
+//         })
+// }
 
 const viewDepartments = () => {
     DB.getDepartments()
