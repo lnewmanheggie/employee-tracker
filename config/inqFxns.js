@@ -141,19 +141,15 @@ const menuFunction = () => {
 //         })
 // }
 
-const addDept = () => {
-    inquirer
-        .prompt(addDepartment)
-        .then(({ department }) => {
-            DB.addDepartment(department)
-                .then(function (result) {
-                    console.log("Department added successfully.")
-                    menuFunction();
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
-        })
+const addDept = async () => {
+    try {
+        const { department } = await inquirer.prompt(addDepartment);
+        await DB.addDepartment(department);
+        console.log("Department added successfully.")
+        menuFunction();
+    } catch {
+        console.log(err)
+    }
 }
 
 const addRole = async () => {
@@ -177,7 +173,6 @@ const addRole = async () => {
 const addEmployee = async () => {
     try {
         const positionArr = await DB.getPositionsINQ();
-        console.log(positionArr);
         if (positionArr.length === 0) {
             console.log("\n****** You must add positions before you add employees ******\n")
             return menuFunction();
@@ -264,78 +259,52 @@ const addEmployee = async () => {
 //         })
 // }
 
-const viewDepartments = () => {
-    DB.getDepartments()
-        .then(function (result) {
-            console.table(result)
-            menuFunction();
-        })
-        .catch(function (err) {
-            console.log(err)
-        })
+
+const viewDepartments = async () => {
+    try {
+        const result = await DB.getDepartments();
+        console.table(result);
+        menuFunction();
+    } catch {
+        console.log(err)
+    }
 }
 
-const viewRoles = () => {
-    DB.getPositions()
-        .then(function (result) {
-            console.table(result)
-            menuFunction();
-        })
-        .catch(function (err) {
-            console.log(err)
-        })
+const viewRoles = async () => {
+    try {
+        const result = await DB.getPositions();
+        console.table(result);
+        menuFunction();
+    } catch {
+        console.log(err)
+    }
 }
 
-const viewEmployees = () => {
-    DB.getEmployees()
-        .then(function (result) {
-            console.table(result)
-            menuFunction();
-        })
-        .catch(function (err) {
-            console.log(err)
-        })
+const viewEmployees = async () => {
+    try {
+        const result = await DB.getEmployees();
+        console.table(result);
+        menuFunction();
+    } catch {
+        console.log(err)
+    }
 }
 
-const updateInfo = () => {
-    DB.getPositions()
-        .then(function (result) {
-            const positionArr = [];
-            result.forEach(element => {
-                let item = {
-                    name: element.title,
-                    value: element.id
-                }
-                positionArr.push(item);
-            });
-            DB.getEmployees()
-                .then(function (result) {
-                    const employeeArr = [];
-                    result.forEach(element => {
-                        let fullName = element.first_name + " " + element.last_name;
-                        let item = {
-                            name: fullName,
-                            value: element.id
-                        }
-                        employeeArr.push(item);
-                    });
-                    inquirer
-                        .prompt(updateEmpRole(employeeArr, positionArr))
-                        .then(({ employeeName, newPosition }) => {
-                            DB.updateEmployeeRole(employeeName, newPosition)
-                                .then(function () {
-                                    console.log("Employee added successfully.")
-                                    menuFunction();
-                                })
-                                .catch(function (err) {
-                                    console.log(err)
-                                })
-                        })
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
-        })
+const updateInfo = async () => {
+    try {
+        const positionArr = await DB.getPositionsINQ();
+        const employeeArr = await DB.getEmployeesINQ();
+
+        const { employeeName, newPosition } = 
+        await inquirer.prompt(updateEmpRole(employeeArr, positionArr));
+
+        await DB.updateEmployeeRole(employeeName, newPosition);
+
+        console.log("Employee updated successfully.")
+        menuFunction(); 
+    } catch {
+        console.log(error);
+    }
 }
 
 const viewEmpByManager = () => {
